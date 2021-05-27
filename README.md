@@ -31,6 +31,16 @@ where n is the total number of bits and w is the number of "on" bits
 
 where n is the total number of bits and w is the number of "on" bits
 
+#### overlap(m1, m2)
+
+where m1 and m2 are MapSets of similar sizes. Returns a MapSet. 
+Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+
+
+#### overlapr(n, w)
+
+where n is the total number of bits and w is the number of "on" bits. Overlap returns a MapSet that is the overlap of two randomly generated MapSets with the specified number of bits and "on" bits.
+
 ## Examples
 
 ```elixir
@@ -40,6 +50,9 @@ where n is the total number of bits and w is the number of "on" bits
 
 	iex(1)> Sdr.sparsity(2048, 6)
 	0.0029296875
+
+	iex(1)> Sdr.overlap(MapSet.new([1, 2]), MapSet.new([2, 3]))
+	#MapSet<[2]>
 ```
 ### Generating documentation
 

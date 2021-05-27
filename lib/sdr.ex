@@ -37,4 +37,29 @@ defmodule Sdr do
   def sparsity(n, w) do
     w / n
   end
+
+  @doc """
+  Overlap of two SDRs.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.overlap(MapSet.new([1, 2]), MapSet.new([2, 3]))
+        #MapSet<[2]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def overlap(m1, m2) do
+    MapSet.intersection(m1, m2)
+  end
+
+  @doc """
+  Overlap of two random similar SDRs given their number of bits n and the number of on bits w.
+  """
+
+  def overlapr(n, w) do
+    MapSet.intersection(MapSet.new(1..w, fn _x -> :crypto.rand_uniform(0,n) end), MapSet.new(1..w, fn _x -> :crypto.rand_uniform(0,n) end))
+  end
 end
+
