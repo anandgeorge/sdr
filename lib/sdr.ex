@@ -61,5 +61,29 @@ defmodule Sdr do
   def overlapr(n, w) do
     MapSet.intersection(MapSet.new(1..w, fn _x -> :crypto.rand_uniform(0,n) end), MapSet.new(1..w, fn _x -> :crypto.rand_uniform(0,n) end))
   end
+
+  @doc """
+  Union of two SDRs.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.union(MapSet.new([1, 2]), MapSet.new([2, 3]))
+        #MapSet<[1, 2, 3]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def union(m1, m2) do
+    MapSet.union(m1, m2)
+  end
+
+  @doc """
+  Union of two random similar SDRs given their number of bits n and the number of on bits w.
+  """
+
+  def unionr(n, w) do
+    MapSet.union(MapSet.new(1..w, fn _x -> :crypto.rand_uniform(0,n) end), MapSet.new(1..w, fn _x -> :crypto.rand_uniform(0,n) end))
+  end
 end
 
