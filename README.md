@@ -49,7 +49,7 @@ Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to conve
 
 #### unionr(n, w)
 
-where n is the total number of bits and w is the number of "on" bits. Overlap returns a MapSet that is the union of two randomly generated MapSets with the specified number of bits and "on" bits.
+where n is the total number of bits and w is the number of "on" bits. Union returns a MapSet that is the union of two randomly generated MapSets with the specified number of bits and "on" bits.
 ## Examples
 
 ```elixir
