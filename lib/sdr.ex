@@ -85,5 +85,53 @@ defmodule Sdr do
   def unionr(n, w) do
     MapSet.union(MapSet.new(1..w, fn _x -> :crypto.rand_uniform(0,n) end), MapSet.new(1..w, fn _x -> :crypto.rand_uniform(0,n) end))
   end
+
+  @doc """
+  Linear encoder.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.simple(0, 100, 1, 21, 72)
+        #MapSet<[72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]>
+    ```
+
+    ```elixir
+        iex(1)> Sdr.simple(0, 100, 1, 21, 73)
+        #MapSet<[73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def simple(min, max, lc, w, v) do
+    range = max - min
+    split = range / lc
+    g = w - 1
+    _n = trunc(split + g)
+    i = trunc(:math.floor(split * (v-min)) / range)
+    MapSet.new(0..g, fn x -> i + x end)
+  end
+
+  @doc """
+  Hash encoder.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.hash(0, 100, 1, 3, 72)
+        #MapSet<["32BB90E8976AAB5298D5DA10FE66F21D", "AD61AB143223EFBC24C7D2583BE69251", "D2DDEA18F00665CE8623E36BD4E3C7C5"]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def hash(min, max, lc, w, v) do
+    range = max - min
+    split = range / lc
+    g = w - 1
+    _n = trunc(split + g)
+    i = trunc(:math.floor(split * (v-min)) / range)
+    MapSet.new(0..g, fn x -> :crypto.hash(:md5, Integer.to_string(i + x)) |> Base.encode16 end)
+  end
+
 end
 
