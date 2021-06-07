@@ -10,8 +10,7 @@ As each bit or neuron has a meaning, if the same bit is active in two SDRs, it m
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `sdr` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `sdr` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do

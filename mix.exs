@@ -8,7 +8,7 @@ defmodule Sdr.MixProject do
       elixir: "~> 1.10",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env() == :prod,
-      description: "Elixir library for Sparse Distributed Representations",
+      description: "Elixir library for Sparse Distributed Representation (SDR)",
       deps: deps(),
       package: package(),
       name: "SDR",
