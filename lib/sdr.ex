@@ -87,29 +87,48 @@ defmodule Sdr do
   end
 
   @doc """
-  Linear encoder.
+  Simple encoder.
 
   ## Examples
 
     ```elixir
-        iex(1)> Sdr.simple(0, 100, 1, 21, 72)
+        iex(1)> Sdr.simple(0, 100, 100, 21, 72)
         #MapSet<[72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]>
     ```
 
     ```elixir
-        iex(1)> Sdr.simple(0, 100, 1, 21, 73)
+        iex(1)> Sdr.simple(0, 100, 100, 21, 73)
         #MapSet<[73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93]>
     ```
     Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
   """
 
-  def simple(min, max, lc, w, v) do
-    range = max - min
-    split = range / lc
+  def simple(min, max, buckets, w, v) do
     g = w - 1
-    _n = trunc(split + g)
-    i = trunc(:math.floor(split * (v-min)) / range)
+    i = trunc(:math.floor(buckets * (v-min)) / max - min)
     MapSet.new(0..g, fn x -> i + x end)
+  end
+
+  @doc """
+  Infinite encoder.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.infinite(21, 72)
+        #MapSet<[72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]>
+    ```
+
+    ```elixir
+        iex(1)> Sdr.infinite(21, 773)
+        #MapSet<[773, 774, 775, 776, 777, 778, 779, 780, 781, 782, 783, 784, 785, 786, 787, 788, 789, 790, 791, 792, 793]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def infinite(w, v) do
+    g = w - 1
+    MapSet.new(0..g, fn x -> v + x end)
   end
 
   @doc """
@@ -118,19 +137,16 @@ defmodule Sdr do
   ## Examples
 
     ```elixir
-        iex(1)> Sdr.hash(0, 100, 1, 3, 72)
-        #MapSet<["32BB90E8976AAB5298D5DA10FE66F21D", "AD61AB143223EFBC24C7D2583BE69251", "D2DDEA18F00665CE8623E36BD4E3C7C5"]>
+        iex(1)> Sdr.hash(3, 732)
+        #MapSet<["6C29793A140A811D0C45CE03C1C93A28", "BA3866600C3540F67C1E9575E213BE0A", "E995F98D56967D946471AF29D7BF99F1"]>
+
     ```
     Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
   """
 
-  def hash(min, max, lc, w, v) do
-    range = max - min
-    split = range / lc
+  def hash(w, v) do
     g = w - 1
-    _n = trunc(split + g)
-    i = trunc(:math.floor(split * (v-min)) / range)
-    MapSet.new(0..g, fn x -> :crypto.hash(:md5, Integer.to_string(i + x)) |> Base.encode16 end)
+    MapSet.new(0..g, fn x -> :crypto.hash(:md5, Integer.to_string(v + x)) |> Base.encode16 end)
   end
 
 end

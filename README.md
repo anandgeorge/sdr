@@ -50,7 +50,7 @@ Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to conve
 
 where n is the total number of bits and w is the number of "on" bits. Union returns a MapSet that is the union of two randomly generated MapSets with the specified number of bits and "on" bits.
 
-## Examples
+### Examples
 
 ```elixir
 
@@ -83,31 +83,53 @@ There are a few important aspects that need to be considered when encoding data
 
 A simple encoder first splits the range of values into sequential buckets of a specified size and then maps the input range over the specified range of SDR.
 
-## Examples
+#### simple(min, max, buckets, w, input)
+
+where min and max and the minimum and maximum values of the range, buckets represents how many parts the range should be divided into, w represents the size of each bucket (number of bits in each bucket) and input the value to be encoded. It returns the encoded value as a MapSet.
+
+#### Examples
 
 ```elixir
 
-    iex(1)> Sdr.simple(0, 100, 1, 21, 72)
+    iex(1)> Sdr.simple(0, 100, 100, 21, 72)
     #MapSet<[72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]>
 
-    iex(1)> Sdr.simple(0, 100, 1, 21, 73)
+    iex(1)> Sdr.simple(0, 100, 100, 21, 73)
     #MapSet<[73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93]>
+```
+
+
+### Infinite encoder
+
+A infinite encoder creates an encoding that results in a fixed number of bits for each value. They are sequentially encoded so semantically similar. Unlike the simple encoder they can cover an infinite range of values.
+
+#### infinite(w, input)
+
+where w represents the number of bits in each encoded output and input is the value to be encoded. It returns the encoded value as a MapSet.
+
+#### Examples
+
+```elixir
+
+    iex(1)> Sdr.infinite(21, 72)
+    #MapSet<[72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]>
+
+    iex(1)> Sdr.infinite(21, 773)
+    #MapSet<[773, 774, 775, 776, 777, 778, 779, 780, 781, 782, 783, 784, 785, 786, 787, 788, 789, 790, 791, 792, 793]>
 ```
 
 ### Hash encoder
 
-A hash encoder first splits the range of values into sequential buckets of a specified size and then maps the input range over the hash of the each element in output range to generate the SDR. The advantage of this method is that you don’t need to restrict the values to an overall range while still maintaining proximity of semantically similar values.
+A hash encoder is similar to an infinite encoder except that the output is a hash of the encoded bits.
 
-## Example
+#### hash(w, input)
+
+where w represents the number of bits in each encoded output and input is the value to be encoded. It returns the encoded value as a MapSet.
+
+#### Example
 
 ```elixir
 
-    iex(1)> Sdr.hash(0, 100, 1, 3, 72)
+    iex(1)> Sdr.hash(3, 72)
     #MapSet<["32BB90E8976AAB5298D5DA10FE66F21D", "AD61AB143223EFBC24C7D2583BE69251", "D2DDEA18F00665CE8623E36BD4E3C7C5"]>
-```
-
-### Generating documentation
-
-```elixir
-	mix docs
 ```
