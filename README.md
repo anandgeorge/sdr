@@ -147,3 +147,25 @@ where w represents the number of bits in each encoded output and input is the va
     iex(1)> Sdr.log(21, 100)
     #MapSet<[4605, 4606, 4607, 4608, 4609, 4610, 4611, 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625]>
 ```
+
+### Delta encoder
+
+A delta encoder encodes the difference between the current and the previous input values. A delta encoder is designed to capture the semantics of the change in a value rather than the value itself. This technique is useful for modeling data that has patterns that can occur in different value ranges and may be helpful to use in conjunction with a regular numeric encoder. 
+
+#### delta(w, prev, curr)
+
+where w represents the number of bits in the encoded output, curr and prev represents the current and previous inputs respectively of the values to be encoded. It returns the encoded value as a MapSet.
+
+#### Example
+
+```elixir
+
+    iex(1)> Sdr.delta(10, 75, 82)
+    #MapSet<[7, 8, 9, 10, 11, 12, 13, 14, 15, 16]>
+
+    iex(1)> Sdr.delta(10, 78, 82)
+    #MapSet<[4, 5, 6, 7, 8, 9, 10, 11, 12, 13]>
+
+    iex(1)> Sdr.delta(10, 78, 72)
+    #MapSet<[-6, -5, -4, -3, -2, -1, 0, 1, 2, 3]>
+```

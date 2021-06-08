@@ -171,5 +171,33 @@ defmodule Sdr do
     g = w - 1
     MapSet.new(0..g, fn x -> trunc(:math.log(v) * 1000) + x end)
   end
+
+  @doc """
+  Delta encoder.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.delta(10, 75, 82)
+        #MapSet<[7, 8, 9, 10, 11, 12, 13, 14, 15, 16]>
+    ```
+
+    ```elixir
+        iex(1)> Sdr.delta(10, 78, 82)
+        #MapSet<[4, 5, 6, 7, 8, 9, 10, 11, 12, 13]>
+    ```
+
+    ```elixir
+        iex(1)> Sdr.delta(10, 78, 72)
+        #MapSet<[-6, -5, -4, -3, -2, -1, 0, 1, 2, 3]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def delta(w, prev, curr) do
+    g = w - 1
+    d = curr - prev
+    MapSet.new(0..g, fn x -> d + x end)
+  end  
 end
 
