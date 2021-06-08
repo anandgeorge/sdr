@@ -149,5 +149,27 @@ defmodule Sdr do
     MapSet.new(0..g, fn x -> :crypto.hash(:md5, Integer.to_string(v + x)) |> Base.encode16 end)
   end
 
+
+  @doc """
+  Log encoder.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.log(21, 1)
+        #MapSet<[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]>
+    ```
+
+    ```elixir
+        iex(1)> Sdr.log(21, 100)
+        #MapSet<[4605, 4606, 4607, 4608, 4609, 4610, 4611, 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def log(w, v) do
+    g = w - 1
+    MapSet.new(0..g, fn x -> trunc(:math.log(v) * 1000) + x end)
+  end
 end
 
