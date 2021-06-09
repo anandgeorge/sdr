@@ -198,6 +198,43 @@ defmodule Sdr do
     g = w - 1
     d = curr - prev
     MapSet.new(0..g, fn x -> d + x end)
-  end  
+  end
+
+  @doc """
+  Cyclic encoder.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.cyclic(0, 10, 20, 8, 2)
+        #MapSet<[4, 5, 6, 7, 8, 9, 10, 11]>
+    ```
+
+    ```elixir
+        iex(1)> Sdr.cyclic(0, 10, 20, 8, 5)
+        #MapSet<[10, 11, 12, 13, 14, 15, 16, 17]>
+    ```
+    ```elixir
+        iex(1)> Sdr.cyclic(0, 10, 20, 8, 15)
+        #MapSet<[10, 11, 12, 13, 14, 15, 16, 17]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def cyclic(min, max, buckets, w, input) do
+    g = w - 1
+    v = rem(input, max)
+    n = buckets
+    i = trunc(:math.floor(buckets * (v-min)) / max - min)
+    MapSet.new(0..g, fn x -> cycle(i, x, n) end)
+  end
+
+  defp cycle(i, x, n) do
+    if (i + x) > n do
+        i + x - n; 
+    else
+      i + x;
+    end
+  end
 end
 

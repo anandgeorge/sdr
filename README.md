@@ -169,3 +169,25 @@ where w represents the number of bits in the encoded output, curr and prev repre
     iex(1)> Sdr.delta(10, 78, 72)
     #MapSet<[-6, -5, -4, -3, -2, -1, 0, 1, 2, 3]>
 ```
+
+### Cyclic encoder
+
+A cyclic encoder is similar to a simple encoder except that values in this case are cyclic. Day of the week, hour of the day etc. are examples of cyclic encoders. The encoder ensures overlap of values between the end of the range and start of the range. 
+
+#### cyclic(min, max, buckets, w, input)
+
+where min and max and the minimum and maximum values of the range, buckets represents how many parts the range should be divided into, w represents the size of each bucket (number of bits in each bucket) and input the value to be encoded. It returns the encoded value as a MapSet.
+
+#### Example
+
+```elixir
+
+    iex(1)> Sdr.cyclic(0, 10, 20, 8, 2)
+    #MapSet<[4, 5, 6, 7, 8, 9, 10, 11]>
+
+    iex(1)> Sdr.cyclic(0, 10, 20, 8, 5)
+    #MapSet<[10, 11, 12, 13, 14, 15, 16, 17]>
+
+    iex(1)> Sdr.cyclic(0, 10, 20, 8, 15)
+    #MapSet<[10, 11, 12, 13, 14, 15, 16, 17]>
+```
