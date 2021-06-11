@@ -236,5 +236,42 @@ defmodule Sdr do
       i + x;
     end
   end
+
+
+  @doc """
+  Multi encoder.
+
+  ## Examples
+
+    ```elixir
+        iex(1)> Sdr.multi([[0,0,100,1000,21,72],[1022,0,10,200,4,5]])
+        #MapSet<[720, 721, 722, 723, 724, 725, 726, 727, 728, 729, 730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 740, 1122, 1123, 1124, 1125]>
+
+    ```
+
+    ```elixir
+        iex(1)> Sdr.multi([[0,0,100,1000,21,73],[1022,0,10,200,4,5.1]])
+        #MapSet<[730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 740, 741, 742, 743, 744, 745, 746, 747, 748, 749, 750, 1123, 1124, 1125, 1126]>
+    ```
+    Use MapSet.size/1 to get the length of the MapSet. Use MapSet.to_list/1 to convert it to a list.
+  """
+
+  def multi(inputs) do
+    Enum.map(inputs, fn x -> combine(x) end)
+    |> List.flatten()
+    |> MapSet.new()
+  end
+
+  defp combine(input) do
+    acc = Enum.at(input, 0)    
+    min = Enum.at(input, 1)
+    max = Enum.at(input, 2)
+    buckets = Enum.at(input, 3)
+    w = Enum.at(input, 4)
+    v = Enum.at(input, 5)
+    g = w - 1 + acc
+    i = trunc(:math.floor(buckets * (v-min)) / max - min)
+    Enum.map(acc..g, fn x -> i + x end)
+  end
 end
 

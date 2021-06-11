@@ -191,3 +191,21 @@ where min and max and the minimum and maximum values of the range, buckets repre
     iex(1)> Sdr.cyclic(0, 10, 20, 8, 15)
     #MapSet<[10, 11, 12, 13, 14, 15, 16, 17]>
 ```
+
+### Multi encoder
+
+A multi encoder combines a set of related values into a single encoded value. A typical input would be the temperature at a given latitude. The encoding ensures that semantically similar values for each input have an overlap while ensuring sparsity.
+
+#### multi([[acc, min, max, buckets, w, input],...])
+
+where min and max and the minimum and maximum values of the range, buckets represents how many parts the range should be divided into, w represents the size of each bucket (number of bits in each bucket), input represents the value to be encoded and acc represents the start value of each bucket range. It returns the encoded value as a MapSet. The inputs are a set of lists.
+
+#### Example
+
+```elixir
+
+    iex(1)> Sdr.multi([[0,0,100,1000,21,72],[1022,0,10,200,4,5]])
+    #MapSet<[720, 721, 722, 723, 724, 725, 726, 727, 728, 729, 730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 740, 1122, 1123, 1124, 1125]>
+
+    iex(1)> Sdr.multi([[0,0,100,1000,21,73],[1022,0,10,200,4,5.1]])
+    #MapSet<[730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 740, 741, 742, 743, 744, 745, 746, 747, 748, 749, 750, 1123, 1124, 1125, 1126]>
