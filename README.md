@@ -79,18 +79,18 @@ There are a few important aspects that need to be considered when encoding data
 
 A simple encoder first splits the range of values into sequential buckets of a specified size and then maps the input range over the specified range of SDR.
 
-#### simple(min, max, buckets, w, input)
+#### simple(start, min, max, buckets, w, input)
 
-where min and max and the minimum and maximum values of the range, buckets represents how many parts the range should be divided into, w represents the size of each bucket (number of bits in each bucket) and input the value to be encoded. It returns the encoded value as a MapSet.
+where min and max and the minimum and maximum values of the range, buckets represents how many parts the range should be divided into, w represents the size of each bucket (number of bits in each bucket) start represents the lower limit of the encoded range and input represents the value to be encoded. It returns the encoded value as a MapSet.
 
 #### Examples
 
 ```elixir
 
-    iex(1)> Sdr.simple(0, 100, 100, 21, 72)
+    iex(1)> Sdr.simple(0, 0, 100, 100, 21, 72)
     #MapSet<[72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]>
 
-    iex(1)> Sdr.simple(0, 100, 100, 21, 73)
+    iex(1)> Sdr.simple(0, 0, 100, 100, 21, 73)
     #MapSet<[73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93]>
 ```
 
@@ -133,18 +133,21 @@ where w represents the number of bits in each encoded output and input is the va
 
 A log encoder encodes the log of the input value. This encoder is sensitive to small changes for small numbers and less sensitive to large values.
 
-#### log(w, input)
+#### log(start, w, input)
 
-where w represents the number of bits in each encoded output and input is the value to be encoded. It returns the encoded value as a MapSet.
+where w represents the number of bits in each encoded output start represents the lower limit of the encoded range and input is the value to be encoded. It returns the encoded value as a MapSet.
 
 #### Example
 
 ```elixir
 
-    iex(1)> Sdr.log(21, 1)
+    iex(1)> Sdr.log(0, 21, 1)
     #MapSet<[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]>
 
-    iex(1)> Sdr.log(21, 100)
+    iex(1)> Sdr.log(0, 21, 10)
+    #MapSet<[2302, 2303, 2304, 2305, 2306, 2307, 2308, 2309, 2310, 2311, 2312, 2313, 2314, 2315, 2316, 2317, 2318, 2319, 2320, 2321, 2322]>
+
+    iex(1)> Sdr.log(0, 21, 100)
     #MapSet<[4605, 4606, 4607, 4608, 4609, 4610, 4611, 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625]>
 ```
 
@@ -152,21 +155,21 @@ where w represents the number of bits in each encoded output and input is the va
 
 A delta encoder encodes the difference between the current and the previous input values. A delta encoder is designed to capture the semantics of the change in a value rather than the value itself. This technique is useful for modeling data that has patterns that can occur in different value ranges and may be helpful to use in conjunction with a regular numeric encoder. 
 
-#### delta(w, prev, curr)
+#### delta(start, w, prev, curr)
 
-where w represents the number of bits in the encoded output, curr and prev represents the current and previous inputs respectively of the values to be encoded. It returns the encoded value as a MapSet.
+where w represents the number of bits in the encoded output, curr and prev represents the current and previous inputs respectively and start represents the lower limit of the encoded range of the values to be encoded. It returns the encoded value as a MapSet.
 
 #### Example
 
 ```elixir
 
-    iex(1)> Sdr.delta(10, 75, 82)
+    iex(1)> Sdr.delta(0, 10, 75, 82)
     #MapSet<[7, 8, 9, 10, 11, 12, 13, 14, 15, 16]>
 
-    iex(1)> Sdr.delta(10, 78, 82)
+    iex(1)> Sdr.delta(0, 10, 78, 82)
     #MapSet<[4, 5, 6, 7, 8, 9, 10, 11, 12, 13]>
 
-    iex(1)> Sdr.delta(10, 78, 72)
+    iex(1)> Sdr.delta(0, 10, 78, 72)
     #MapSet<[-6, -5, -4, -3, -2, -1, 0, 1, 2, 3]>
 ```
 
@@ -174,27 +177,27 @@ where w represents the number of bits in the encoded output, curr and prev repre
 
 A cyclic encoder is similar to a simple encoder except that values in this case are cyclic. Day of the week, hour of the day etc. are examples of cyclic encoders. The encoder ensures overlap of values between the end of the range and start of the range. 
 
-#### cyclic(min, max, buckets, w, input)
+#### cyclic(start, min, max, buckets, w, input)
 
-where min and max and the minimum and maximum values of the range, buckets represents how many parts the range should be divided into, w represents the size of each bucket (number of bits in each bucket) and input the value to be encoded. It returns the encoded value as a MapSet.
+where min and max and the minimum and maximum values of the range, buckets represents how many parts the range should be divided into, w represents the size of each bucket (number of bits in each bucket) start represents the lower limit of the encoded range and input the value to be encoded. It returns the encoded value as a MapSet.
 
 #### Example
 
 ```elixir
 
-    iex(1)> Sdr.cyclic(0, 10, 20, 8, 2)
+    iex(1)> Sdr.cyclic(0, 0, 10, 20, 8, 2)
     #MapSet<[4, 5, 6, 7, 8, 9, 10, 11]>
 
-    iex(1)> Sdr.cyclic(0, 10, 20, 8, 5)
+    iex(1)> Sdr.cyclic(0, 0, 10, 20, 8, 5)
     #MapSet<[10, 11, 12, 13, 14, 15, 16, 17]>
 
-    iex(1)> Sdr.cyclic(0, 10, 20, 8, 15)
+    iex(1)> Sdr.cyclic(0, 0, 10, 20, 8, 15)
     #MapSet<[10, 11, 12, 13, 14, 15, 16, 17]>
 ```
 
 ### Multi encoder
 
-A multi encoder combines a set of related values into a single encoded value. A typical input would be the temperature at a given latitude. The encoding ensures that semantically similar values for each input have an overlap while ensuring sparsity.
+A multi encoder combines a set of related values into a single encoded value. A typical input would be the temperature at a given latitude.
 
 #### multi([[acc, min, max, buckets, w, input],...])
 
@@ -209,3 +212,20 @@ where min and max and the minimum and maximum values of the range, buckets repre
 
     iex(1)> Sdr.multi([[0,0,100,1000,21,73],[1022,0,10,200,4,5.1]])
     #MapSet<[730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 740, 741, 742, 743, 744, 745, 746, 747, 748, 749, 750, 1123, 1124, 1125, 1126]>
+```
+
+### Merge encoder
+
+A merge encoder merges together a set of encoded values generated from any of the other encoders. A typical input would be the temperature at a given time of day, day of week and month of year. This encoder could combine together the values encoded by a simple encoder and a set of cyclic encoders. Encoded values are successively piped into the next one to merge a chain of encodings.
+
+#### merge(encoded1, encoded2)
+
+where encoded1 and encoded2 are the set of encoded values as MapSets that are intened to be merged. It returns the encoded value as a MapSet.
+
+#### Example
+
+```elixir
+
+    iex(1)> Sdr.simple(0, 0, 100, 100, 21, 72) |> Sdr.merge(Sdr.cyclic(122, 0, 24, 24, 8, 4))
+    #MapSet<[72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 126, 127, 128, 129, 130, 131, 132, 133]>
+```
